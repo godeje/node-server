@@ -1,16 +1,14 @@
 {
-  "name": "nodejs-server",
+  "name": "ld3-server",
   "version": "1.0.0",
-  "description": "A simple Node.js server",
+  "description": "Servidor Node.js con Express y PostgreSQL (Neon estable)",
+  "type": "module",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
-    "dev": "node server.js"
+    "start": "node server.js"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "dependencies": {
-    "express": "^5.1.0"
+    "express": "^5.1.0",
+    "pg": "^8.11.3"
   }
 }
