@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Panel de Alertas — LD6 Mini</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #0b0c10;
+      color: #e5e5e5;
+      text-align: center;
+      padding: 30px;
+    }
+    h1 { color: #00ffcc; }
+    input, button {
+      padding: 10px;
+      margin: 5px;
+      border-radius: 5px;
+      border: none;
+    }
+    button {
+      background: #00cc66;
+      color: #fff;
+      cursor: pointer;
+    }
+    button:hover { background: #00ff99; }
+    table {
+      margin: 20px auto;
+      border-collapse: collapse;
+      width: 90%;
+      background: #1a1a1a;
+    }
+    th, td {
+      padding: 8px;
+      border: 1px solid #00ffcc44;
+    }
+    th { color: #00ffcc; }
+  </style>
+</head>
+<body>
+  <h1>📡 Panel de Alertas — LD6 Mini</h1>
+
+  <div>
+    <input id="usuario" placeholder="Usuario" value="Jess" />
+    <input id="mensaje" placeholder="Mensaje" />
+    <button onclick="enviar()">Enviar alerta</button>
+  </div>
+
+  <table id="tabla">
+    <thead>
+      <tr><th>ID</th><th>Usuario</th><th>Mensaje</th><th>Hora</th></tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <script>
+    async function cargar() {
+      const res = await fetch("/historial");
+      const data = await res.json();
+      const tbody = document.querySelector("#tabla tbody");
+      tbody.innerHTML = "";
+      data.datos.forEach(r => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `<td>${r.id}</td><td>${r.usuario}</td><td>${r.mensaje}</td><td>${r.hora}</td>`;
+        tbody.appendChild(tr);
+      });
+    }
+
+    async function enviar() {
+      const usuario = document.getElementById("usuario").value.trim();
+      const mensaje = document.getElementById("mensaje").value.trim();
+      if (!usuario || !mensaje) return alert("Faltan datos");
+      await fetch("/alerta", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ usuario, mensaje })
+      });
+      document.getElementById("mensaje").value = "";
+      cargar();
+    }
+
+    cargar();
+  </script>
+</body>
+</html>

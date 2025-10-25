@@ -1,6 +1,10 @@
 // ✅ LD — Servidor Node.js conectado a Neon PostgreSQL (versión estable final)
 import express from "express";
 import pkg from "pg";
+import path from "path";
+import { fileURLToPath } from "url";
+import dotenv from "dotenv";   // <--- 🔹 Agregado
+dotenv.config();               // <--- 🔹 Carga variables del archivo .env
 const { Pool } = pkg;
 
 const app = express();
@@ -53,6 +57,15 @@ app.post("/alerta", async (req, res) => {
 app.get("/historial", async (req, res) => {
   const result = await pool.query("SELECT * FROM alertas ORDER BY id DESC");
   res.json({ ok: true, total: result.rows.length, datos: result.rows });
+});
+
+// === 🧩 LD6: servir el panel React manual ===
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+app.use("/client", express.static(path.join(__dirname, "client")));
+
+app.get("/panel", (req, res) => {
+  res.sendFile(path.join(__dirname, "client", "index.html"));
 });
 
 // Iniciar servidor
